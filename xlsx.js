@@ -4307,7 +4307,7 @@ function parse_sst_xml(data, opts) {
 	if(isval(sst)) {
 		ss = sst[2].replace(sstr1,"").split(sstr2);
 		for(var i = 0; i != ss.length; ++i) {
-			var o = parse_si(ss[i], opts);
+			var o = parse_si(ss[i].replace(/(\r|\t|\n)/g, ''), opts);
 			if(o != null) s[s.length] = o;
 		}
 		sst = parsexmltag(sst[1]); s.Count = sst.count; s.Unique = sst.uniqueCount;
