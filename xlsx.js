@@ -1314,8 +1314,14 @@ function getdata(data) {
 
 function safegetzipfile(zip, file) {
 	var f = file; if(zip.files[f]) return zip.files[f];
-	f = file.toLowerCase(); if(zip.files[f]) return zip.files[f];
-	f = f.replace(/\//g,'\\'); if(zip.files[f]) return zip.files[f];
+	
+	var lowerCaseFiles = {};
+	for (var key in zip.files) {
+		lowerCaseFiles[key.toLowerCase()] = zip.files[key];
+	}
+
+	f = file.toLowerCase(); if(lowerCaseFiles[f]) return lowerCaseFiles[f];
+	f = f.replace(/\//g,'\\'); if(lowerCaseFiles[f]) return lowerCaseFiles[f];
 	return null;
 }
 
@@ -4978,10 +4984,11 @@ function write_cellXfs(cellXfs) {
 
 /* 18.8 Styles CT_Stylesheet*/
 var parse_sty_xml = (function make_pstyx() {
-  var numFmtRegex = /<numFmts([^>]*)>.*<\/numFmts>/;
-  var cellXfRegex = /<cellXfs([^>]*)>.*<\/cellXfs>/;
-  var fillsRegex = /<fills([^>]*)>.*<\/fills>/;
-  var bordersRegex = /<borders([^>]*)>.*<\/borders>/;
+  var numFmtRegex = /<numFmts([^>]*)>(.|\r|\n)*<\/numFmts>/;
+  var cellXfRegex = /<cellXfs([^>]*)>(.|\r|\n)*<\/cellXfs>/;
+  var fillsRegex = /<fills([^>]*)>(.|\r|\n)*<\/fills>/;
+  var bordersRegex = /<borders([^>]*)>(.|\r|\n)*<\/borders>/;
+  var fontsRegex = /<fonts([^>]*)>(.|\r|\n)*<\/fonts>/;
 
   return function parse_sty_xml(data, opts) {
     /* 18.8.39 styleSheet CT_Stylesheet */
@@ -4991,7 +4998,7 @@ var parse_sty_xml = (function make_pstyx() {
     if ((t = data.match(numFmtRegex))) parse_numFmts(t, opts);
 
     /* fonts CT_Fonts ? */
-    if ((t = data.match(/<fonts([^>]*)>.*<\/fonts>/))) parse_fonts(t, opts)
+    if ((t = data.match(fontsRegex))) parse_fonts(t, opts)
 
     /* fills CT_Fills */
     if ((t = data.match(fillsRegex))) parse_fills(t, opts);
