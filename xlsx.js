@@ -3538,7 +3538,7 @@ function parse_MulRk(blob, length) {
 function parse_CellStyleXF(blob, length, style) {
 	var o = {};
 
-	if(opts.biff === 5) {
+	if(Object.keys(blob).length == 21) { // BIFF5
 		blob.l += 2;
 		var code = blob.read_shift(4);
 	    o.icvFore = code & 0x7F;
