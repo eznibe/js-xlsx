@@ -3537,11 +3537,21 @@ function parse_MulRk(blob, length) {
 /* 2.5.20 2.5.249 TODO */
 function parse_CellStyleXF(blob, length, style) {
 	var o = {};
-	var a = blob.read_shift(4), b = blob.read_shift(4);
-	var c = blob.read_shift(4), d = blob.read_shift(2);
-	o.patternType = XLSFillPattern[c >> 26];
-	o.icvFore = d & 0x7F;
-	o.icvBack = (d >> 7) & 0x7F;
+
+	if(opts.biff === 5) {
+		blob.l += 2;
+		var code = blob.read_shift(4);
+	    o.icvFore = code & 0x7F;
+	    o.icvBack = (code >> 7) & 0x7F;
+	    o.patternType = XLSFillPattern[(code >> 16) & 0x3F];
+	} else {
+		var a = blob.read_shift(4), b = blob.read_shift(4);
+		var c = blob.read_shift(4), d = blob.read_shift(2);
+		o.patternType = XLSFillPattern[c >> 26];
+		o.icvFore = d & 0x7F;
+		o.icvBack = (d >> 7) & 0x7F;
+	}
+	
 	return o;
 }
 function parse_CellXF(blob, length) {return parse_CellStyleXF(blob,length,0);}
