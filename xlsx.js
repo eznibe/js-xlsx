@@ -4708,6 +4708,11 @@ function parse_fills(t, opts) {
       /* 18.8.19 fgColor CT_Color */
       case '<fgColor':
         if (!fill.fgColor) fill.fgColor = {};
+        if (y.indexed) {
+        	var colorIdx = parseInt(y.indexed, 10);
+        	if(XLSIcv.length > colorIdx)
+        		fill.fgColor.rgb = rgb2Hex(XLSIcv[colorIdx]);
+        }
         if (y.theme) fill.fgColor.theme = parseInt(y.theme, 10);
         if (y.tint) fill.fgColor.tint = parseFloat(y.tint);
 
