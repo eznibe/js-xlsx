@@ -4954,6 +4954,9 @@ function parse_cellXfs(t, opts) {
         break;
       case '</xf>':
         break;
+	  case '<xf/>':
+		styles.CellXf.push([]);
+	  break;
 
       /* 18.8.1 alignment CT_CellAlignment */
       case '<alignment':
